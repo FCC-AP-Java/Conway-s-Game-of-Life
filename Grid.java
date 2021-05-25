@@ -55,7 +55,7 @@ public class Grid
     while(true)
     {
       printBoard(board);
-      System.out.println("Please enter the coordinates of your colony, 0-" + (boardSize - 1) + ", in the format [0][1], and press enter when you are ready to start.");
+      System.out.println("Please enter the coordinates of your colony, 0-" + (boardSize - 1) + ", in the format (0,1), and press enter when you are ready to start.");
       String coordinates = input.nextLine();
       if (coordinates.equals(""))
       {
@@ -65,9 +65,8 @@ public class Grid
       {
         try
         {
-          int first = coordinates.indexOf("]");
-          int second = coordinates.lastIndexOf("]");
-          board[Integer.valueOf(coordinates.substring(1,first))][Integer.valueOf(coordinates.substring(first + 2,second))] = occupied;
+          int coordSplit = coordinates.indexOf(",");
+          board[Integer.valueOf(coordinates.substring(1,coordSplit))][Integer.valueOf(coordinates.substring(coordSplit + 1,coordinates.length() - 1))] = occupied;
         }
         catch (Exception e)
         {
