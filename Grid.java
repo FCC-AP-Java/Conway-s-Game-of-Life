@@ -1,16 +1,34 @@
 import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
 
+@SuppressWarnings("serial")
 public class Grid
 {
   private char[][] board;
   private final char blank = 'M';
   private final char occupied = '*';
   private int boardSize = 25;
+  private JFrame frame = new JFrame("Game Of Life");
 
   Scanner input = new Scanner(System.in);
 
   public Grid()
   {
+    EventQueue.invokeLater(new Runnable() 
+    {
+      @Override
+      public void run() 
+      {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+          e.printStackTrace();
+        }
+
+        generateNewFrame();
+      }
+    });
     board = new char[boardSize][boardSize];
     for (int row = 0; row < board.length; row++)
     {
@@ -21,17 +39,52 @@ public class Grid
     }
   }
 
-  public Grid(int s)
+  public class BoardPane extends JPanel
   {
-    boardSize = s;
-    board = new char[s][s];
-    for (int row = 0; row < board.length; row++)
+    public BoardPane()
     {
-      for (int col = 0; col < board[0].length; col++)
+      setLayout(new GridLayout(boardSize,boardSize,0,0));
+      setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+      for (int i = 0; i < boardSize; i++)
       {
-        board[row][col] = blank;
+        for (int j = 0; j < boardSize; j++)
+        {
+          add(generateCell(i,j));
+        }
       }
     }
+  }
+
+  public JPanel generateCell(int x, int y)
+  {
+    JPanel cell = new JPanel()
+    {
+      @Override
+      public Dimension getPreferredSize()
+      {
+        return new Dimension(10,10);
+      }
+    };
+    if (board[x][y] == '*')
+    {
+      cell.setBackground(Color.BLACK);
+    }
+    else
+    {
+      cell.setBackground(Color.WHITE);
+    }
+    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    return cell;
+  }
+
+  public void generateNewFrame()
+  {
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.add(new BoardPane());
+    frame.pack();
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
+    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
   }
 
   public void startGame()
@@ -41,6 +94,7 @@ public class Grid
     while (_continue.equals(""))
     {
       board = nextGeneration();
+      printBoard(board);
       System.out.println("Please press enter to continue, type pause to edit the board, or enter any other text to exit.");
       _continue = input.nextLine();
     }
@@ -63,13 +117,10 @@ public class Grid
       }
       else
       {
-        try
-        {
+        try {
           int coordSplit = coordinates.indexOf(",");
           board[Integer.valueOf(coordinates.substring(1,coordSplit))][Integer.valueOf(coordinates.substring(coordSplit + 1,coordinates.length() - 1))] = occupied;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
           System.out.println("You have entered an invalid input. Try again.");
         }
       }
@@ -94,6 +145,9 @@ public class Grid
       }
       System.out.println("");
     }
+    frame.dispose();
+    frame = new JFrame("Game Of Life");
+    generateNewFrame();
   }
 
   public char[][] nextGeneration()
@@ -138,7 +192,6 @@ public class Grid
         }
       }
     }
-    printBoard(nextGen);
     return nextGen;
   }
 }
