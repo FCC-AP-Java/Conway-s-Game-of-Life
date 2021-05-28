@@ -57,14 +57,7 @@ public class Grid
 
   public JPanel generateCell(int x, int y)
   {
-    JPanel cell = new JPanel()
-    {
-      @Override
-      public Dimension getPreferredSize()
-      {
-        return new Dimension(10,10);
-      }
-    };
+    JPanel cell = new JPanel();
     if (board[x][y] == '*')
     {
       cell.setBackground(Color.BLACK);
