@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class Grid
@@ -10,6 +11,7 @@ public class Grid
   private final char occupied = '*';
   private int boardSize = 25;
   private JFrame frame = new JFrame("Game Of Life");
+  private JPanel[][] panelArray = new JPanel[boardSize][boardSize];
 
   Scanner input = new Scanner(System.in);
 
@@ -52,6 +54,32 @@ public class Grid
           add(generateCell(i,j));
         }
       }
+      addMouseListener(new MouseAdapter() 
+      {
+        @Override
+        public void mousePressed(MouseEvent e)
+        {
+          JPanel panel = (JPanel)getComponentAt(e.getPoint());
+          for (int i = 0; i < panelArray.length; i++)
+          {
+            for (int j = 0; j < panelArray.length; j++)
+            {
+              if (panelArray[i][j] == panel)
+              {
+                if (board[i][j] == occupied)
+                {
+                  board[i][j] = blank;
+                }
+                else if (board[i][j] == blank)
+                {
+                  board[i][j] = occupied;
+                }
+                printBoard(board);
+              }
+            }
+          }
+        }
+      });
     }
   }
 
@@ -66,6 +94,7 @@ public class Grid
     {
       cell.setBackground(Color.WHITE);
     }
+    panelArray[x][y] = cell;
     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
     return cell;
   }
@@ -78,20 +107,20 @@ public class Grid
     frame.pack();
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
-    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     frame.revalidate();
     frame.repaint();
   }
 
   public void startGame()
   {
+    frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     editBoard();
     String _continue = "";
     while (_continue.equals(""))
     {
       board = nextGeneration();
       printBoard(board);
-      System.out.println("Please press enter to continue, type pause to edit the board, or enter any other text to exit.");
+      System.out.println("Please press enter to continue, type pause to edit the board through text, click boxes to flip their state, or enter any other text to exit.");
       _continue = input.nextLine();
     }
     if (_continue.toLowerCase().equals("pause"))
@@ -106,7 +135,7 @@ public class Grid
     while(true)
     {
       printBoard(board);
-      System.out.println("Please enter the coordinates of your colony, 0-" + (boardSize - 1) + ", in the format (0,1), and press enter when you are ready to start.");
+      System.out.println("Please enter the coordinates of your colony, 0-" + (boardSize - 1) + ", in the format (0,1), or click boxes to flip their state, then press enter when you are ready to start.");
       String coordinates = input.nextLine();
       if (coordinates.equals(""))
       {
@@ -142,9 +171,7 @@ public class Grid
       }
       System.out.println("");
     }
-    
     generateNewFrame();
-    
   }
 
   public char[][] nextGeneration()
