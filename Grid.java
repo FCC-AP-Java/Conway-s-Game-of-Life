@@ -72,12 +72,15 @@ public class Grid
 
   public void generateNewFrame()
   {
+    frame.getContentPane().removeAll();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.add(new BoardPane());
     frame.pack();
     frame.setLocationRelativeTo(null);
     frame.setVisible(true);
     frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    frame.revalidate();
+    frame.repaint();
   }
 
   public void startGame()
@@ -95,6 +98,7 @@ public class Grid
     {
       startGame();
     }
+    System.exit(0);
   }
 
   public void editBoard()
@@ -138,9 +142,9 @@ public class Grid
       }
       System.out.println("");
     }
-    frame.dispose();
-    frame = new JFrame("Game Of Life");
+    
     generateNewFrame();
+    
   }
 
   public char[][] nextGeneration()
