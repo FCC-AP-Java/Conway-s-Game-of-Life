@@ -9,15 +9,27 @@ public class Grid
   private char[][] board;
   private final char blank = 'M';
   private final char occupied = '*';
-  private int boardSize = 25;
+  private int boardSize;
   private JFrame frame = new JFrame("Game Of Life");
-  private JPanel[][] panelArray = new JPanel[boardSize][boardSize];
+  private JPanel[][] panelArray;
 
   Scanner input = new Scanner(System.in);
 
   public Grid()
   {
-    EventQueue.invokeLater(new Runnable() 
+    System.out.println("The default board size is 25x25. If you would like to change it, please enter your desired length as a positive whole number. Otherwise, enter any other text or press enter.");
+    String size = input.nextLine();
+    try {
+      if (Integer.valueOf(size) <= 0)
+      {
+        throw new NumberFormatException();
+      }
+      boardSize = Integer.valueOf(size);
+    } catch (NumberFormatException e) {
+      boardSize = 25;
+    }
+    panelArray = new JPanel[boardSize][boardSize];
+    EventQueue.invokeLater(new Runnable()
     {
       @Override
       public void run() 
@@ -27,7 +39,6 @@ public class Grid
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
           e.printStackTrace();
         }
-
         generateNewFrame();
       }
     });
@@ -86,7 +97,7 @@ public class Grid
   public JPanel generateCell(int x, int y)
   {
     JPanel cell = new JPanel();
-    if (board[x][y] == '*')
+    if (board[x][y] == occupied)
     {
       cell.setBackground(Color.BLACK);
     }
