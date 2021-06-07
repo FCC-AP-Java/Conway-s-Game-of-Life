@@ -17,7 +17,7 @@ public class Grid
 
   public Grid()
   {
-    System.out.println("The default board size is 25x25. If you would like to change it, please enter your desired length as a positive whole number. Otherwise, enter any other text or press enter.");
+    System.out.println("The default board size is 25x25. If you would like to change it, please enter your desired length as a positive integer. Otherwise, enter any other text or press enter.");
     String size = input.nextLine();
     try {
       if (Integer.valueOf(size) <= 0)
@@ -29,19 +29,7 @@ public class Grid
       boardSize = 25;
     }
     panelArray = new JPanel[boardSize][boardSize];
-    EventQueue.invokeLater(new Runnable()
-    {
-      @Override
-      public void run() 
-      {
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-          e.printStackTrace();
-        }
-        generateNewFrame();
-      }
-    });
+    generateNewFrame();
     board = new char[boardSize][boardSize];
     for (int row = 0; row < board.length; row++)
     {
@@ -112,14 +100,27 @@ public class Grid
 
   public void generateNewFrame()
   {
-    frame.getContentPane().removeAll();
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.add(new BoardPane());
-    frame.pack();
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-    frame.revalidate();
-    frame.repaint();
+    EventQueue.invokeLater(new Runnable()
+    {
+      @Override
+      public void run() 
+      {
+        try {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          frame.getContentPane().removeAll();
+          frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+          frame.add(new BoardPane());
+          frame.pack();
+          frame.setLocationRelativeTo(null);
+          frame.setVisible(true);
+          frame.revalidate();
+          frame.repaint();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    
   }
 
   public void startGame()
